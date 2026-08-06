@@ -1,4 +1,4 @@
-const CACHE = 'limoneto-v11';
+const CACHE = 'limoneto-v12';
 const CORE = [
   './manifest.webmanifest',
   './icona-192.png',
