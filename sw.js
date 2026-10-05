@@ -1,9 +1,11 @@
-const CACHE = 'limoneto-v64';
+const CACHE = 'limoneto-v203';
 const CORE = [
   './manifest.webmanifest',
   './icona-192.png',
   './icona-512.png',
-  './assets/microgreen-sistema-v3.png'
+  './assets/microgreen-sistema-v3.png',
+  './mappa-3d.html',
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
 ];
 
 self.addEventListener('install', (e) => {
