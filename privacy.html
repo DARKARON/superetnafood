@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<title>Privacy e cookie — Super Etna Food</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/styles.css">
+<script src="ds/ds-bundle.js"></script>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root { --font-heading: 'Newsreader', Georgia, serif; --font-body: 'Karla', system-ui, sans-serif; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--font-body); font-size: 17px; text-wrap: pretty; overflow-x: hidden; }
+  h1, h2, h3, .nav-brand { font-family: var(--font-heading); }
+  .nav, .btn { font-family: var(--font-body); }
+  a { color: #0A5806; }
+  a:hover { color: #0D6E08; }
+  img { max-width: 100%; height: auto; }
+  :focus-visible { outline: 2px solid #E8A838; outline-offset: 2px; }
+  .nav-toggle { display: none; }
+  .nav-burger { display: none; }
+  .nav-links { display: flex; align-items: center; flex-wrap: nowrap; gap: clamp(5px, 0.8vw, 10px); flex: 1 1 auto; min-width: 0; }
+  .nav-links > a.nav-plate:first-child { margin-left: auto; }
+  .nav-links > a.nav-plate[href^="zafferano"] { padding-left: clamp(6px, 1.05vw, 17px); padding-right: clamp(6px, 1.05vw, 17px); }
+  .nav-links > a.nav-plate[href^="limoni"] { padding-left: clamp(14px, 2.3vw, 40px); padding-right: clamp(14px, 2.3vw, 40px); }
+  .nav-links > a.nav-plate[href^="chi-siamo"] { padding-left: clamp(14px, 2.3vw, 40px); padding-right: clamp(14px, 2.3vw, 40px); }
+  .nav-links > a.btn { margin-left: auto; flex: 0 1 auto; height: 76px; padding-left: clamp(14px, 1.8vw, 28px); padding-right: clamp(14px, 1.8vw, 28px); white-space: nowrap; box-sizing: border-box; align-items: center; }
+  .nav { padding-left: max(clamp(16px, 5vw, 72px), calc((100% - 820px) / 2 + clamp(16px, 5vw, 72px))) !important; padding-right: max(clamp(16px, 5vw, 72px), calc((100% - 820px) / 2 + clamp(16px, 5vw, 72px))) !important; }
+  @media (max-width: 1180px) {
+    .nav { padding: 10px clamp(16px, 5vw, 72px) !important; align-items: center; }
+    .nav-brand img { height: 46px !important; }
+    .nav-burger { margin-left: auto; display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 46px; height: 46px; padding: 10px; box-sizing: border-box; cursor: pointer; border-radius: 10px; background: color-mix(in srgb, #3A1B08 16%, transparent); }
+    .nav-burger span { display: block; height: 2px; background: #3A1B08; border-radius: 2px; }
+    .nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: 2px; padding: 6px 0 8px; flex: 0 0 auto; }
+    .nav-toggle:checked ~ .nav-links { display: flex; }
+    .nav-links > a { padding: 12px 0; min-height: 44px; display: flex; align-items: center; font-size: 21px !important; }
+    .nav-links > a.btn { margin: 10px 0 0 0 !important; width: 100%; min-height: 50px; justify-content: center; box-sizing: border-box; }
+  }
+  a.nav-plate { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 76px; min-width: 0; flex: 0 1 auto; padding: 0 clamp(10px, 1.6vw, 26px); box-sizing: border-box; border-radius: 5px; background-color: #B98868; background-image: url('assets/targa-fascia.jpg'); background-size: cover; background-position: center; border: none; box-shadow: none; -webkit-mask-image: radial-gradient(115% 130% at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%); mask-image: radial-gradient(115% 130% at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%); color: #F7E9CF; text-shadow: 0 1px 2px rgba(36,16,4,0.7); font-weight: 700; font-size: clamp(17px, 1.5vw, 22px); white-space: nowrap; text-decoration: none; }
+  .nav-links > a.nav-plate { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 clamp(10px, 1.6vw, 26px); }
+  @media (min-width: 1181px) { .nav { flex-wrap: nowrap !important; } .nav-links { flex-wrap: nowrap; } }
+  @media (min-width: 1181px) and (max-width: 1480px) {
+    .nav { padding-left: 24px !important; padding-right: 24px !important; gap: 12px !important; }
+    a.nav-plate-home { margin-right: 4px; gap: 10px; }
+    a.nav-plate-home img { height: 72px !important; width: 72px !important; }
+    .nav-links > a.nav-plate, .nav-links > a.nav-plate[href^="limoni"], .nav-links > a.nav-plate[href^="chi-siamo"], .nav-links > a.nav-plate[href^="zafferano"] { padding-left: 12px !important; padding-right: 12px !important; font-size: 18px !important; }
+    .nav-links > a.btn { font-size: 16px !important; padding-left: 14px !important; padding-right: 14px !important; }
+  }
+  @media (min-width: 1181px) { .nav-links > a.nav-plate, .nav-links > a.nav-plate[href] { flex: 1 1 0 !important; min-width: 0 !important; padding-left: 8px !important; padding-right: 8px !important; margin-left: 0 !important; } .nav-links { margin-left: clamp(8px, 1.5vw, 24px); } }
+  a.nav-plate:hover { background-color: #C99A7B; color: #FFF3DC; }
+  a.nav-plate[aria-current="page"] { color: #FFF3DC; background-color: #8E5F3E; }
+  .nav-glyph { display: block; position: relative; flex: 0 0 auto; }
+  .nav-glyph i { position: absolute; display: block; }
+  .nav-glyph-lemon { width: 28px; height: 19px; background: linear-gradient(160deg, #FFE58A 0%, #FFD84D 45%, #F2B90E 100%); clip-path: path('M 0,9.5 C 1,3.5 6,0 14,0 C 22,0 27,3.5 28,9.5 C 27,15.5 22,19 14,19 C 6,19 1,15.5 0,9.5 Z'); }
+  .nav-glyph-sprout { width: 34px; height: 22px; }
+  .nav-glyph-sprout .st1 { left: 6px; bottom: 6px; width: 2px; height: 8px; background: #E86A93; }
+  .nav-glyph-sprout .st2 { left: 12px; bottom: 6px; width: 2px; height: 8px; background: #F2A0BC; }
+  .nav-glyph-sprout .st3 { left: 18px; bottom: 6px; width: 2px; height: 8px; background: #E86A93; }
+  .nav-glyph-sprout .st4 { left: 24px; bottom: 6px; width: 2px; height: 8px; background: #F2A0BC; }
+  .nav-glyph-sprout .mass { left: 1px; top: 0; width: 32px; height: 11px; border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%; background: linear-gradient(#8FCC63, #4E8B3A); }
+  .nav-glyph-sprout .tuft-l { left: 5px; top: -2px; width: 9px; height: 7px; border-radius: 50%; background: #9AD46E; }
+  .nav-glyph-sprout .tuft-r { left: 19px; top: -1px; width: 8px; height: 6px; border-radius: 50%; background: #7FBF5A; }
+  .nav-glyph-sprout .tray { left: 2px; bottom: 0; width: 30px; height: 6px; border-radius: 1px 1px 3px 3px; background: linear-gradient(#8E5F3E, #5C3A22); }
+  .nav-glyph-crocus { width: 26px; height: 17px; }
+  .nav-glyph-crocus .pt { bottom: 0; width: 9px; height: 14px; border-radius: 50% 50% 42% 42%; background: #B983D8; }
+  .nav-glyph-crocus .pt-l { left: 0; transform: rotate(-24deg); }
+  .nav-glyph-crocus .pt-c { left: 8.5px; }
+  .nav-glyph-crocus .pt-r { right: 0; transform: rotate(24deg); }
+  .nav-glyph-crocus .st { top: 0; width: 2px; height: 7px; border-radius: 1px; background: #E2622A; }
+  .nav-glyph-crocus .st-l { left: 9px; transform: rotate(-26deg); }
+  .nav-glyph-crocus .st-c { left: 12.5px; }
+  .nav-glyph-crocus .st-r { left: 16px; transform: rotate(26deg); }
+  .nav-glyph-leaf { width: 28px; height: 14px; }
+  .nav-glyph-leaf .lf { top: 0; width: 15px; height: 10px; border-radius: 100% 0 100% 0; background: #7FBF5A; }
+  .nav-glyph-leaf .lf-l { left: 0; transform: rotate(-8deg); }
+  .nav-glyph-leaf .lf-r { right: 0; transform: rotate(172deg); background: #5F9E3E; }
+  .nav-glyph-lock { width: 16px; height: 18px; }
+  .nav-glyph-lock .sh { left: 3px; top: 0; width: 10px; height: 10px; box-sizing: border-box; border: 2.5px solid #FFD84D; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .nav-glyph-lock .bd { left: 0; bottom: 0; width: 16px; height: 10px; border-radius: 2px; background: linear-gradient(#FFE58A, #F2B90E); }
+  a.nav-plate-home { flex-direction: row; justify-content: flex-start; gap: 13px; min-width: 0; margin-right: 16px; padding: 0 16px 0 0; height: auto; background: none; -webkit-mask-image: none; mask-image: none; }
+  a.nav-plate-home img { height: clamp(68px, 7.2vw, 108px); width: clamp(68px, 7.2vw, 108px); border-radius: 50%; display: block; flex: 0 0 auto; }
+  .nav-plate-bar { display: block; width: 26px; height: 3px; border-radius: 2px; }
+  @media (max-width: 1180px) {
+    .nav-links { gap: 8px !important; }
+    .nav-links > a.nav-plate:first-child { margin-left: 0; }
+    .nav-links > a.nav-plate { flex-direction: row; justify-content: flex-start; gap: 12px; width: 100%; min-height: 52px; height: auto; flex: 0 0 auto; padding: 12px 16px !important; font-size: 21px !important; }
+    .nav-links > a.nav-plate .nav-plate-bar { width: 5px; height: 22px; margin-left: auto; }
+    .nav-links > a.nav-plate .nav-glyph { margin-left: auto; transform: scale(1.25); transform-origin: right center; }
+    .nav-glyph-lock { width: 16px; height: 18px; }
+  .nav-glyph-lock .sh { left: 3px; top: 0; width: 10px; height: 10px; box-sizing: border-box; border: 2.5px solid #FFD84D; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .nav-glyph-lock .bd { left: 0; bottom: 0; width: 16px; height: 10px; border-radius: 2px; background: linear-gradient(#FFE58A, #F2B90E); }
+  a.nav-plate-home { margin-right: 0; }
+  }
+</style>
+<script>
+(function () {
+  var KEY = 'sef-consenso-analytics';
+  function init() {
+    var box = document.getElementById('stato-consenso');
+    if (!box) return;
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    box.textContent = saved === 'si' ? 'Attualmente hai accettato le statistiche.' : saved === 'no' ? 'Attualmente hai rifiutato le statistiche.' : 'Non hai ancora espresso una scelta.';
+    var btn = document.getElementById('revoca-consenso');
+    if (btn) btn.addEventListener('click', function () {
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      box.textContent = 'Scelta azzerata: ricaricando una pagina del sito ti verrà richiesta di nuovo.';
+    });
+  }
+  var t = setInterval(function () { if (document.getElementById('stato-consenso')) { clearInterval(t); init(); } }, 200);
+  setTimeout(function () { clearInterval(t); }, 8000);
+})();
+</script>
+</helmet>
+
+<nav class="nav" style="padding: 12px clamp(16px, 5vw, 72px); flex-wrap: wrap; gap: 10px 20px; background-color: #B98868; background-image: url('assets/targa-fascia.jpg'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; border: 0">
+  <a class="nav-plate nav-plate-home" href="index.html" aria-label="Super Etna Food — torna alla home"><img src="assets/logo-round.png" alt="">Home</a>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+  <label for="nav-toggle" class="nav-burger" aria-label="Apri il menù"><span></span><span></span><span></span></label>
+  <div class="nav-links">
+  <a class="nav-plate" href="limoni.html"><span>Limoni</span><span class="nav-glyph nav-glyph-lemon"></span></a>
+  <a class="nav-plate" href="microgreen.html"><span>Microgreen</span><span class="nav-glyph nav-glyph-sprout"><i class="st1"></i><i class="st2"></i><i class="st3"></i><i class="st4"></i><i class="mass"></i><i class="tuft-l"></i><i class="tuft-r"></i><i class="tray"></i></span></a>
+  <a class="nav-plate" href="zafferano.html"><span>Zafferano</span><span class="nav-glyph nav-glyph-crocus"><i class="pt pt-l"></i><i class="pt pt-c"></i><i class="pt pt-r"></i><i class="st st-l"></i><i class="st st-c"></i><i class="st st-r"></i></span></a>
+  <a class="nav-plate" href="chi-siamo.html"><span>Il Fondo</span><span class="nav-glyph nav-glyph-leaf"><i class="lf lf-l"></i><i class="lf lf-r"></i></span></a>
+  <a class="nav-plate" href="area-riservata.html"><span>Area riservata</span><span class="nav-glyph nav-glyph-lock"><i class="sh"></i><i class="bd"></i></span></a>
+  <a class="btn" style="background: #25D366; color: #0B2E10; border-color: #25D366; font-weight: 600; font-size: 18px; border-radius: 999px; white-space: nowrap" href="https://wa.me/393515286188" target="_blank" rel="noopener">Scrivimi su WhatsApp</a>
+  </div>
+</nav>
+
+<div style="max-width: 820px; margin: 0 auto; padding: clamp(28px, 5vw, 56px) clamp(16px, 5vw, 48px) 0">
+
+  <h1 style="font-weight: 500; font-size: clamp(32px, 4.6vw, 50px); line-height: 1.08; letter-spacing: -0.02em; margin: 0">Informativa privacy</h1>
+  <p style="font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 60%, transparent); margin: 12px 0 0">Aggiornata a ottobre 2026 · artt. 13 e 14 del Regolamento UE 2016/679 (GDPR)</p>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0">Questa informativa spiega quali dati personali tratta Super Etna Food quando visiti il sito, ci scrivi, ordini i nostri prodotti o adotti un albero, compresi i dati e le foto che carichi nell'area riservata.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">1. Titolare del trattamento</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">Azienda agricola Antonio Grasso — Super Etna Food, Via Stazione 83, 95024 Acireale (CT), Italia. P.IVA 06189010876. Contatto per ogni questione sui tuoi dati: <a href="mailto:superetnafood@gmail.com">superetnafood@gmail.com</a>. Non è stato nominato un responsabile della protezione dei dati (DPO), perché non è obbligatorio per la nostra attività.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">2. Quali dati trattiamo</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0"><strong>Contatti e ordini.</strong> Se ci scrivi su WhatsApp o via mail, o ordini microgreen, zafferano o limoni: nome e cognome, numero di telefono, indirizzo email, contenuto dei messaggi, prodotti ordinati, indirizzo di consegna e, se richiedi un documento fiscale, i dati per emetterlo (codice fiscale o partita IVA, sede).</p>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0"><strong>Adozione di un albero.</strong> Nome e cognome dell'adottante, email, telefono, formula scelta, data di inizio, luogo e date concordati per la consegna a mano, storico delle consegne. Se l'adozione è un regalo, anche il nome della persona che lo riceve.</p>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0"><strong>Area riservata.</strong> Il numero dell'albero e la password che ti assegniamo, e quello che inserisci tu:</p>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li>il nome da dare alla pianta e il detto scelto, che vengono <strong>stampati sulla targhetta e appesi all'albero</strong>, quindi sono visibili a chi visita il fondo;</li><li>la <strong>foto facoltativa</strong> per la targhetta, stampata a colori e anch'essa visibile sull'albero. Se la foto ritrae te o altre persone, è un dato personale: vedi il punto 4.</li></ul>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0"><strong>Dati della pianta.</strong> Foto dal campo, interventi colturali e raccolte riguardano l'albero e non te; sono associati al tuo albero solo per mostrarteli nell'area riservata.</p>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0"><strong>Dati tecnici e statistiche.</strong> Come ogni sito, le pagine ricevono dal tuo browser l'indirizzo IP e il tipo di dispositivo, e il sito salva nel browser solo ciò che serve a farlo funzionare (vedi il punto 9). Solo con il tuo consenso, Google Analytics 4 raccoglie dati di navigazione in forma aggregata, senza registrare l'indirizzo IP.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">3. Perché li trattiamo e su quale base giuridica</h2>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li><strong>Rispondere ai messaggi, gestire ordini e adozioni, consegnare a mano i limoni, gestire l'area riservata, stampare e applicare la targhetta, mandarti foto e aggiornamenti sulla pianta</strong>: esecuzione del contratto o di misure precontrattuali che ci chiedi (art. 6.1.b GDPR).</li><li><strong>Stampare la foto che carichi sulla targhetta</strong>: il tuo consenso esplicito, dato con la casella al momento dell'invio (art. 6.1.a). È facoltativo e lo puoi revocare: in quel caso ristampiamo la targhetta senza foto.</li><li><strong>Adempimenti fiscali e contabili</strong>, comprese le autofatture su richiesta: obbligo di legge (art. 6.1.c).</li><li><strong>Sicurezza dell'area riservata, tutela in caso di contestazioni</strong>: legittimo interesse del titolare (art. 6.1.f). Puoi opporti in qualsiasi momento.</li><li><strong>Statistiche di visita</strong>: solo il tuo consenso (art. 6.1.a), revocabile in qualsiasi momento in fondo a questa pagina.</li></ul>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0">Non usiamo i tuoi dati per pubblicità, profilazione o decisioni automatizzate. Le targhette sono controllate e approvate a mano dal titolare prima della stampa.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0" id="foto">4. Le foto che carichi</h2>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li>Caricare una foto è facoltativo: senza foto l'adozione funziona lo stesso.</li><li>Carica solo foto di cui hai i diritti. Se ritraggono altre persone, devi avere il loro consenso, come prevede anche la legge sul diritto all'immagine (art. 96 L. 633/1941). Per i minori serve il consenso di chi esercita la responsabilità genitoriale.</li><li>Non caricare foto che rivelino dati particolari (salute, convinzioni religiose o politiche e simili): non ci servono.</li><li>Possiamo rifiutare una foto non adatta e chiederti di sceglierne un'altra.</li><li>La foto è usata solo per la targhetta del tuo albero. Non la pubblichiamo sul sito né sui social senza un tuo permesso specifico.</li></ul>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">5. Conferimento dei dati</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">I dati di contatto e di consegna sono necessari per ordinare o adottare un albero: senza, non possiamo eseguire il servizio. Nome della pianta e detto servono per la targhetta. La foto e il consenso alle statistiche sono facoltativi.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">6. Chi tratta i dati per nostro conto</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">I tuoi dati <strong>non vengono venduti, ceduti né diffusi</strong>, a parte la targhetta sull'albero. Li trattano il titolare e questi fornitori, nominati responsabili del trattamento o titolari autonomi secondo le rispettive condizioni:</p>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li><strong>Google Ireland Ltd.</strong>: Google Drive, Fogli Google e Apps Script, dove sono conservati i dati delle adozioni e le foto; Gmail per le comunicazioni; Google Analytics, solo con il tuo consenso.</li><li><strong>WhatsApp Ireland Ltd. (Meta)</strong>, titolare autonomo per i messaggi che ci mandi.</li><li><strong>PayPal (Europe) S.à r.l. et Cie, S.C.A.</strong>, titolare autonomo per i dati del pagamento.</li><li><strong>GitHub Inc.</strong>: per l'hosting delle pagine del sito.</li><li><strong>Commercialista o CAA</strong>, per gli adempimenti fiscali.</li><li>Le autorità, se ce lo chiede la legge.</li></ul>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">7. Trasferimenti fuori dall'Unione europea</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">Alcuni fornitori (Google, Meta, GitHub) possono trattare dati fuori dall'Unione europea, in particolare negli Stati Uniti. Il trasferimento avviene sulla base del Data Privacy Framework UE-USA, a cui questi fornitori aderiscono, oppure delle clausole contrattuali standard approvate dalla Commissione europea.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">8. Per quanto tempo</h2>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li><strong>Dati dell'adozione e credenziali</strong>: per tutta la durata dell'adozione e per 12 mesi dopo la scadenza, per gestire rinnovi e consegne residue. Poi cancelliamo l'account e i dati collegati.</li><li><strong>Nome, detto e foto della targhetta</strong>: per la durata dell'adozione. Alla fine togliamo la targhetta dall'albero e cancelliamo la foto dai nostri archivi entro 60 giorni, salvo rinnovo.</li><li><strong>Messaggi e dati d'ordine</strong>: il tempo necessario a gestire il rapporto. I documenti contabili per 10 anni, come richiede la legge.</li><li><strong>Statistiche</strong>: al massimo 14 mesi, in forma aggregata.</li><li><strong>Richieste sui tuoi diritti</strong>: il tempo necessario a dimostrare di averle gestite, al massimo 2 anni.</li></ul>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">9. Cookie e memoria del browser</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">Il sito non usa cookie pubblicitari né di profilazione. Salva nel tuo browser solo questi dati tecnici:</p>
+  <ul style="font-size: 18px; line-height: 1.7; margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px"><li>la tua scelta sulle statistiche (memoria locale del browser, finché non la cambi);</li><li>l'accesso all'area riservata, finché non chiudi la scheda o premi Esci (memoria di sessione).</li></ul>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0">Google Analytics viene caricato solo dopo il tuo consenso e salva un identificativo per non contare due volte la stessa visita.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">10. Sicurezza</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">L'area riservata è protetta da password personali. Gli archivi sono accessibili solo al titolare, e le foto sono raggiungibili solo tramite il loro collegamento diretto, che non pubblichiamo. Conserva la tua password con cura e non condividerla. Se pensi che qualcuno l'abbia scoperta, scrivici e te ne diamo una nuova.</p>
+  <p style="font-size: 18px; line-height: 1.7; margin: 16px 0 0">Se dovesse verificarsi una violazione dei dati, la notifichiamo al Garante entro 72 ore quando è richiesto e, se ci sono rischi elevati per te, ti avvisiamo direttamente (artt. 33 e 34 GDPR).</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">11. Minori</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">Ordini e adozioni sono riservati ai maggiorenni, perché richiedono la capacità di concludere un contratto. Un'adozione può essere regalata a un minore, ma i dati e le eventuali foto vanno forniti da un genitore o da chi ne ha la responsabilità.</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">12. I tuoi diritti</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">In qualsiasi momento puoi chiedere di accedere ai tuoi dati, correggerli, cancellarli, limitarne il trattamento, opporti ai trattamenti basati sul legittimo interesse, riceverli in un formato leggibile (portabilità) e revocare i consensi dati, senza che questo tocchi quanto fatto prima della revoca (artt. 15–22 GDPR). Esercitare i diritti è gratuito. Scrivi a <a href="mailto:superetnafood@gmail.com">superetnafood@gmail.com</a> o su <a href="https://wa.me/393515286188" target="_blank" rel="noopener">WhatsApp</a>: rispondiamo entro un mese. Se ritieni che il trattamento non sia corretto, puoi presentare reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it</a>).</p>
+
+  <h2 style="font-weight: 600; font-size: 24px; line-height: 1.2; margin: 44px 0 0">13. Modifiche</h2>
+  <p style="font-size: 18px; line-height: 1.7; margin: 12px 0 0">Se cambiamo il modo in cui trattiamo i dati aggiorniamo questa pagina e la data in alto. Ai titolari di un'adozione segnaliamo le modifiche importanti via email o WhatsApp.</p>
+
+  <div style="margin: 36px 0 0; padding: 22px 24px; background: color-mix(in srgb, var(--color-text) 4%, var(--color-bg)); border-radius: 14px">
+    <p id="stato-consenso" style="font-size: 17px; line-height: 1.6; margin: 0; font-weight: 600">Non hai ancora espresso una scelta.</p>
+    <button type="button" id="revoca-consenso" class="btn btn-secondary" style="margin-top: 16px; font-size: 16px; border-radius: 999px; cursor: pointer">Cambia la mia scelta</button>
+  </div>
+
+  <footer style="padding: clamp(40px, 6vw, 72px) 0 clamp(32px, 5vw, 56px); font-size: 13.5px; line-height: 1.8; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <p style="margin: 0">Super Etna Food — azienda agricola Antonio Grasso · Via Stazione 83, 95024 Acireale (CT) · superetnafood@gmail.com · P.IVA 06189010876</p>
+  </footer>
+</div>
+</x-dc>
+</body>
+</html>

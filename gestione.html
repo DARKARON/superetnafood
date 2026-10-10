@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/styles.css">
+<script src="ds/ds-bundle.js"></script>
+<script src="sef-api.js"></script>
+<script src="fondo-dati.js"></script>
+<link rel="stylesheet" href="fonts/fonts.css">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestione adozioni — Super Etna Food</title>
+<style>
+  :root { --font-heading: 'Newsreader', Georgia, serif; --font-body: 'Karla', system-ui, sans-serif; }
+  body { margin: 0; font-family: var(--font-body); font-size: 17px; text-wrap: pretty; background: var(--color-bg); color: var(--color-text); }
+  h1, h2 { font-family: var(--font-heading); }
+  a { color: #0A5806; }
+  a:hover { color: #0D6E08; }
+  :focus-visible { outline: 2px solid #E8A838; outline-offset: 2px; }
+  input, select, textarea, button { font-family: var(--font-body); font-size: 17px; color: var(--color-text); }
+</style>
+</helmet>
+
+<sc-if value="{{ nonLoggato }}" hint-placeholder-val="{{ true }}">
+<section style="background: #0D6E08; min-height: 100vh; box-sizing: border-box; display: flex; align-items: center; padding: 40px clamp(16px, 5vw, 72px)">
+  <form onSubmit="{{ accedi }}" style="width: 100%; max-width: 440px; margin: 0 auto; background: var(--color-bg); border-radius: 18px; padding: clamp(24px, 4vw, 40px); display: grid; gap: 18px">
+    <span style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #0A5806; font-weight: 600">Uso interno · Adotta un limone</span>
+    <h1 style="font-weight: 500; font-size: 36px; line-height: 1.1; margin: 0">Gestione adozioni</h1>
+    <label style="display: grid; gap: 8px; font-size: 16px; font-weight: 600">Password master<input name="master" type="password" autocomplete="current-password" required="required" style="min-height: 50px; padding: 12px 16px; font-size: 18px; border-radius: 12px; border: 1.5px solid color-mix(in srgb, #0D6E08 35%, transparent); background: #ffffff"></label>
+    <sc-if value="{{ errore }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; font-size: 16px; color: #B3261E">{{ errore }}</p></sc-if>
+    <button type="submit" style="min-height: 50px; border-radius: 999px; border: 0; background: #0D6E08; color: #ffffff; font-weight: 600; font-size: 18px; cursor: pointer">{{ testoEntra }}</button>
+    <p style="margin: 0; font-size: 15px; line-height: 1.5"><a href="area-riservata.html">Torna all'area riservata</a></p>
+    <sc-if value="{{ demo }}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 75%, transparent)">Modalità demo, non ancora collegata a Google: i dati restano in questo browser.</p></sc-if>
+  </form>
+</section>
+</sc-if>
+
+<sc-if value="{{ loggato }}" hint-placeholder-val="{{ false }}">
+<header style="background: #0D6E08; color: #ffffff">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 22px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px">
+    <div style="min-width: 0">
+      <span style="display: block; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, #ffffff 78%, transparent)">Gestione adozioni · {{ conteggio }}</span>
+      <h1 style="font-weight: 500; font-size: clamp(28px, 3.6vw, 40px); line-height: 1.1; margin: 6px 0 0">Albero n. {{ numeroPad }}</h1>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+      <select value="{{ numero }}" onChange="{{ cambiaAlbero }}" aria-label="Scegli l'albero" style="min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 0; background: #ffffff; max-width: 70vw">
+        <sc-for list="{{ numeri }}" as="n" hint-placeholder-count="3"><option value="{{ n.v }}">{{ n.label }}</option></sc-for>
+      </select>
+      <button type="button" onClick="{{ ricarica }}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, #ffffff 60%, transparent); background: transparent; color: #ffffff; font-weight: 600; cursor: pointer">Aggiorna</button>
+      <button type="button" onClick="{{ esci }}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, #ffffff 60%, transparent); background: transparent; color: #ffffff; font-weight: 600; cursor: pointer">Esci</button>
+    </div>
+  </div>
+</header>
+
+<sc-if value="{{ haDaApprovare }}" hint-placeholder-val="{{ false }}">
+<div style="background: color-mix(in srgb, #E8A838 22%, var(--color-bg))">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 14px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
+    <span style="font-weight: 600; color: #5A3D08">Targhette da approvare</span>
+    <sc-for list="{{ daApprovare }}" as="d" hint-placeholder-count="1">
+      <button type="button" onClick="{{ d.vai }}" style="min-height: 38px; padding: 0 14px; border-radius: 999px; border: 0; background: #ffffff; color: #5A3D08; font-weight: 600; font-size: 15px; cursor: pointer">{{ d.label }}</button>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<main style="max-width: 1320px; margin: 0 auto; padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 48px) 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: clamp(32px, 4vw, 56px); align-items: start">
+
+  <div style="display: grid; gap: 44px; min-width: 0">
+    <section>
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px">
+        <h2 style="font-weight: 500; font-size: 28px; line-height: 1.15; margin: 0">La targhetta</h2>
+        <span style="font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: {{ statoBg }}; color: {{ statoFg }}">{{ statoTesto }}</span>
+      </div>
+      <div style="margin-top: 18px"></div>
+      <div style="width: 100%; max-width: 900px; aspect-ratio: 1676 / 640; container-type: inline-size; position: relative; overflow: hidden; border-radius: 6px; background-color: {{ tm.fondo }}; background-image: {{ tm.img }}; background-size: 100% 100%; background-repeat: no-repeat; color: {{ tm.ink }}; box-shadow: 0 2px 4px rgba(40,18,8,0.25), 0 12px 30px rgba(40,18,8,0.22)">
+        <div style="position: absolute; left: 31.5%; right: 23.8%; top: 10%; bottom: 8%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; text-shadow: {{ tm.ombra }}">
+          <span style="font-family: var(--font-heading); font-weight: 500; font-size: 6.5cqw; line-height: 1; overflow-wrap: anywhere; text-wrap: balance">{{ tg.nome }}</span>
+          <span style="font-family: var(--font-heading); font-style: italic; font-size: 3.5cqw; line-height: 1.25; margin-top: 1.2cqw">{{ tg.detto }}</span>
+          <span style="font-size: 2.5cqw; line-height: 1.2; margin-top: 0.6cqw">{{ tg.trad }}</span>
+          <span style="font-size: 2cqw; line-height: 1.2; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-top: 1.4cqw; white-space: nowrap">Albero n. {{ numeroPad }}</span>
+          <span style="font-size: 1.85cqw; line-height: 1.2; letter-spacing: 0.04em; margin-top: 0.5cqw; white-space: nowrap">{{ dataAdozione }}</span>
+        </div>
+        <div style="position: absolute; left: {{ tm.foto }}; width: 18.4%; top: 11.9%; height: 73.2%; border-radius: 0.6cqw; overflow: hidden; display: flex; align-items: center; justify-content: center">
+          <sc-if value="{{ tg.haFoto }}" hint-placeholder-val="{{ false }}">{{ fotoTg }}</sc-if>
+        </div>
+      </div>
+      <sc-if value="{{ motivoTesto }}" hint-placeholder-val="{{ false }}"><p style="margin: 14px 0 0; font-size: 16px; line-height: 1.55; color: #5A3D08">{{ motivoTesto }}</p></sc-if>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px">
+        <sc-if value="{{ inAttesa }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ approva }}" style="min-height: 46px; padding: 0 22px; border-radius: 999px; border: 0; background: #0D6E08; color: #ffffff; font-weight: 600; cursor: pointer">Approva</button>
+          <button type="button" onClick="{{ respingi }}" style="min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #7A2A1E; background: transparent; color: #7A2A1E; font-weight: 600; cursor: pointer">Chiedi di rifarla</button>
+        </sc-if>
+        <sc-if value="{{ approvata }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ riapri }}" style="min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, #0D6E08 40%, transparent); background: transparent; color: #0A5806; font-weight: 600; cursor: pointer">Riapri la scelta</button>
+        </sc-if>
+        <sc-if value="{{ puoStampare }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ stampa }}" style="min-height: 46px; padding: 0 20px; border-radius: 999px; border: 0; background: #E8A838; color: #33230A; font-weight: 600; cursor: pointer">Stampa targhetta</button>
+        </sc-if>
+      </div>
+    </section>
+
+    <section>
+      <h2 style="font-weight: 500; font-size: 28px; line-height: 1.15; margin: 0">Foto dal campo</h2>
+      <form onSubmit="{{ caricaFoto }}" style="margin-top: 18px; background: color-mix(in srgb, #0D6E08 6%, var(--color-bg)); border-radius: 18px; padding: 20px; display: grid; gap: 14px">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+          <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Foto<input name="file" type="file" accept="image/*" required="required" style="min-height: 46px; padding: 8px 0; font-size: 15px"></label>
+          <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Data<input name="data" type="date" defaultValue="{{ oggi }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"></label>
+        </div>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Didascalia<input name="nota" placeholder="es. La fioritura del primofiore" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"></label>
+        <div><button type="submit" style="min-height: 46px; padding: 0 22px; border-radius: 999px; border: 0; background: #0D6E08; color: #ffffff; font-weight: 600; cursor: pointer">{{ testoCaricaFoto }}</button></div>
+      </form>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px">
+        <sc-for list="{{ foto }}" as="f" hint-placeholder-count="2">
+          <figure style="margin: 0; min-width: 0">
+            <img src="{{ f.src }}" alt="{{ f.nota }}" loading="lazy" style="display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 12px; background: color-mix(in srgb, #0D6E08 8%, var(--color-bg))">
+            <figcaption style="margin-top: 8px; font-size: 14px; line-height: 1.4"><span style="display: block; font-weight: 600">{{ f.data }}</span><span style="display: block; color: color-mix(in srgb, var(--color-text) 75%, transparent)">{{ f.nota }}</span></figcaption>
+            <button type="button" onClick="{{ f.elimina }}" style="min-height: 36px; padding: 0; border: 0; background: transparent; color: #7A2A1E; font-weight: 600; font-size: 14px; cursor: pointer">Elimina</button>
+          </figure>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; gap: 44px; min-width: 0">
+    <section>
+      <h2 style="font-weight: 500; font-size: 28px; line-height: 1.15; margin: 0">Dati della pianta e dell'adozione</h2>
+      <p style="margin: 10px 0 0; font-size: 15.5px; line-height: 1.55; background: color-mix(in srgb, #0088B0 9%, var(--color-bg)); border-radius: 12px; padding: 12px 16px; color: #00405A">{{ fondoInfo }}</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 20px; margin-top: 18px">
+        <sc-for list="{{ campi }}" as="c" hint-placeholder-count="6">
+          <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">{{ c.label }}
+            <input name="{{ c.name }}" type="{{ c.type }}" value="{{ c.val }}" onChange="{{ modifica }}" placeholder="{{ c.ph }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff">
+          </label>
+        </sc-for>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Varietà
+          <select name="varieta" value="{{ b.varieta }}" onChange="{{ modifica }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"><option value="">—</option><option>Femminello</option><option>Femminello Zagara Bianca</option><option>Monachello</option><option>Nostrale</option></select>
+        </label>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Formula
+          <select name="formula" value="{{ b.formula }}" onChange="{{ modifica }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"><option value="">—</option><option>Il tuo albero sull'Etna</option><option>Una stagione di limoni</option><option value="Spedito in Italia">Spedito in Italia (vecchia)</option><option>Dal fondo alle tue mani</option></select>
+        </label>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Targhetta
+          <select name="targa" value="{{ b.targa }}" onChange="{{ modifica }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"><option value="">Dalla formula ({{ tmAuto }})</option><option value="bronzo">Bronzo · sostenitore base</option><option value="argento">Argento · sostenitore a distanza</option><option value="oro">Oro · sostenitore da vicino</option></select>
+        </label>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Password dell'adottante
+          <span style="display: flex; gap: 8px"><input name="password" value="{{ b.password }}" onChange="{{ modifica }}" style="flex: 1; min-width: 0; min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"><button type="button" onClick="{{ generaPassword }}" style="min-height: 46px; padding: 0 14px; border-radius: 10px; border: 0; background: color-mix(in srgb, #0D6E08 12%, var(--color-bg)); color: #0A5806; font-weight: 600; font-size: 15px; cursor: pointer">Genera</button></span>
+        </label>
+      </div>
+      <label style="display: grid; gap: 6px; margin-top: 16px; font-size: 14.5px; font-weight: 600">Note sulla pianta (le vede l'adottante)
+        <textarea name="note" value="{{ b.note }}" onChange="{{ modifica }}" rows="3" style="padding: 10px 12px; line-height: 1.5; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff; resize: vertical"></textarea>
+      </label>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 18px">
+        <button type="button" onClick="{{ salva }}" style="min-height: 48px; padding: 0 24px; border-radius: 999px; border: 0; background: #0D6E08; color: #ffffff; font-weight: 600; cursor: pointer">{{ testoSalva }}</button>
+        <span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 72%, transparent)">{{ statoSalvataggio }}</span>
+      </div>
+    </section>
+
+    <section>
+      <h2 style="font-weight: 500; font-size: 28px; line-height: 1.15; margin: 0">Consegne</h2>
+      <ol style="list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 2px">
+        <sc-for list="{{ consegne }}" as="c" hint-placeholder-count="1">
+          <li style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr) 44px; gap: 10px; align-items: center; padding: 6px 0; font-size: 16px"><span style="font-family: var(--font-heading); font-size: 18px">{{ c.quando }}</span><span>{{ c.cosa }}</span><span>{{ c.stato }}</span><button type="button" onClick="{{ c.elimina }}" aria-label="Elimina consegna" style="min-width: 44px; min-height: 44px; border: 0; background: transparent; font-size: 22px; cursor: pointer; color: color-mix(in srgb, var(--color-text) 55%, transparent)">×</button></li>
+        </sc-for>
+      </ol>
+      <form onSubmit="{{ aggiungiConsegna }}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px">
+        <input name="quando" placeholder="Dicembre 2026" required="required" style="min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff">
+        <input name="cosa" placeholder="Primofiore, 15 kg" required="required" style="min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff">
+        <select name="stato" style="min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"><option>In programma</option><option>Spedita</option><option>Consegnata</option></select>
+        <button type="submit" style="min-height: 44px; border-radius: 999px; border: 0; background: color-mix(in srgb, #0D6E08 12%, var(--color-bg)); color: #0A5806; font-weight: 600; cursor: pointer">Aggiungi</button>
+      </form>
+    </section>
+
+    <section>
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px">
+        <h2 style="font-weight: 500; font-size: 28px; line-height: 1.15; margin: 0">Diario della pianta</h2>
+        <span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 75%, transparent)">{{ totaleKg }}</span>
+      </div>
+      <sc-if value="{{ haComuni }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 14px"><span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 75%, transparent)">Dal gestionale di campo:</span>
+          <sc-for list="{{ comuni }}" as="c" hint-placeholder-count="1"><button type="button" onClick="{{ c.aggiungi }}" style="min-height: 38px; padding: 0 14px; border-radius: 999px; border: 0; background: color-mix(in srgb, #0088B0 12%, var(--color-bg)); color: #00405A; font-weight: 600; font-size: 15px; cursor: pointer">+ {{ c.label }}</button></sc-for>
+        </div>
+      </sc-if>
+      <form onSubmit="{{ aggiungiDiario }}" style="margin-top: 18px; background: color-mix(in srgb, #0D6E08 6%, var(--color-bg)); border-radius: 18px; padding: 20px; display: grid; gap: 14px">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+          <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Intervento
+            <select name="tipo" value="{{ nuovoTipo }}" onChange="{{ cambiaTipo }}" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff">
+              <sc-for list="{{ tipi }}" as="tp" hint-placeholder-count="7"><option value="{{ tp.v }}">{{ tp.v }}</option></sc-for>
+            </select>
+          </label>
+          <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Data<input name="data" type="date" defaultValue="{{ oggi }}" required="required" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"></label>
+          <sc-if value="{{ isRaccolta }}" hint-placeholder-val="{{ false }}">
+            <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Kg raccolti<input name="kg" inputmode="decimal" placeholder="15" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"></label>
+          </sc-if>
+        </div>
+        <label style="display: grid; gap: 6px; font-size: 14.5px; font-weight: 600">Cosa hai fatto<input name="testo" placeholder="{{ placeholderDiario }}" required="required" style="min-height: 46px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid color-mix(in srgb, #0D6E08 30%, transparent); background: #ffffff"></label>
+        <div><button type="submit" style="min-height: 46px; padding: 0 22px; border-radius: 999px; border: 0; background: #0D6E08; color: #ffffff; font-weight: 600; cursor: pointer">Aggiungi al diario</button></div>
+      </form>
+      <ol style="list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 2px">
+        <sc-for list="{{ diario }}" as="x" hint-placeholder-count="2">
+          <li style="display: grid; grid-template-columns: 100px minmax(0, 1fr) 44px; gap: 12px; align-items: baseline; padding: 8px 0">
+            <span style="font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">{{ x.data }}</span>
+            <span style="min-width: 0"><span style="display: block; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: {{ x.colore }}">{{ x.tipo }}</span><span style="display: block; font-size: 17px; line-height: 1.45">{{ x.testo }}</span></span>
+            <button type="button" onClick="{{ x.elimina }}" aria-label="Elimina voce" style="min-width: 44px; min-height: 44px; border: 0; background: transparent; font-size: 22px; cursor: pointer; color: color-mix(in srgb, var(--color-text) 55%, transparent)">×</button>
+          </li>
+        </sc-for>
+      </ol>
+    </section>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ avviso }}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: 90vw; background: #2A1608; color: #ffffff; padding: 12px 20px; border-radius: 999px; font-size: 15px; box-shadow: var(--shadow-md)">{{ avviso }}</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  KEY = 'sef-master';
+  DATI = ['password','adottante','email','formula','inizio','varieta','posizione','impianto','ultimaRaccolta','note','certificato','targa'];
+  TIPI = { Concimazione: ['#0A5806', 'es. Concime organico pellettato, 2 kg'], Potatura: ['#7A5410', 'es. Potatura di produzione, tolti i succhioni'], Trattamento: ['#00607D', 'es. Rame contro il mal secco, 30 g in 10 L'], Irrigazione: ['#00607D', 'es. Turno del consorzio, 80 L'], Forzatura: ['#7A5410', 'es. Inizio secca per il verdello'], Raccolta: ['#9A3B00', 'es. Primofiore'], Nota: ['#4A4440', 'es. Fioritura abbondante'] };
+  state = { master: '', elenco: null, numero: 1, bozza: null, sporco: false, occupato: '', avviso: '', errore: '', nuovoTipo: 'Concimazione' };
+  pronto(fn) { if (window.SEF) return fn(); const t = setInterval(() => { if (window.SEF) { clearInterval(t); fn(); } }, 100); setTimeout(() => clearInterval(t), 8000); }
+  componentDidMount() {
+    let m = ''; try { m = sessionStorage.getItem(this.KEY) || ''; } catch (e) {}
+    if (m) this.pronto(() => this.entra(m, true));
+  }
+  entra(m, silenzioso) {
+    this.setState({ occupato: 'entra', errore: '' });
+    window.SEF.chiama('mElenco', { master: m }).then(el => {
+      try { sessionStorage.setItem(this.KEY, m); } catch (e) {}
+      const daFare = el.find(a => a.stato === 'inviato');
+      const n = daFare ? +daFare.numero : this.state.numero;
+      this.setState({ master: m, elenco: el, occupato: '', numero: n, bozza: null, sporco: false });
+    }, e => { try { sessionStorage.removeItem(this.KEY); } catch (x) {} this.setState({ occupato: '', errore: silenzioso ? '' : e.message }); });
+  }
+  avvisa(t) { this.setState({ avviso: t }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ avviso: '' }), 3000); }
+  albero() {
+    const S = window.SEF, n = S ? S.pad(this.state.numero) : '';
+    return (this.state.elenco || []).find(a => a.numero === n) || { numero: n, stato: '', foto: [], diario: [], consegne: [] };
+  }
+  fondo() { const F = window.SEF_FONDO; return F && F.piante ? F.piante[this.state.numero] : null; }
+  bozza() {
+    if (this.state.bozza) return this.state.bozza;
+    const a = this.albero(), b = {}, p = this.fondo();
+    this.DATI.forEach(k => b[k] = a[k] || '');
+    if (p) { if (!b.varieta) b.varieta = p.varieta; if (!b.posizione) b.posizione = 'Filare ' + p.filare + ', pianta ' + this.state.numero; if (!b.impianto) b.impianto = String(p.anno); }
+    return b;
+  }
+  aggiorna(x) {
+    const el = (this.state.elenco || []).filter(a => a.numero !== x.numero).concat(x).sort((p, q) => p.numero.localeCompare(q.numero));
+    this.setState({ elenco: el });
+  }
+  esegui(azione, dati, msg, dopo) {
+    if (this.state.occupato) return Promise.resolve();
+    this.setState({ occupato: azione });
+    return window.SEF.chiama(azione, Object.assign({ master: this.state.master, numero: this.albero().numero }, dati)).then(x => {
+      this.aggiorna(x); this.setState({ occupato: '' }); if (msg) this.avvisa(msg); if (dopo) dopo(x);
+    }, e => { this.setState({ occupato: '' }); this.avvisa(e.message); });
+  }
+  vai(n) {
+    if (this.state.sporco && !confirm('Hai modifiche non salvate ai dati. Cambiare albero lo stesso?')) return;
+    this.setState({ numero: n, bozza: null, sporco: false });
+  }
+  targhetta(a) {
+    if (a.stato === 'approvato') return { nome: a.nomePianta, detto: a.detto, trad: a.traduzione, foto: a.fotoTarghetta };
+    if (a.nomeProposto) return { nome: a.nomeProposto, detto: a.dettoProposto, trad: a.traduzioneProposta, foto: a.fotoTarghetta };
+    return { nome: "In attesa della scelta dell'adottante", detto: '', trad: '', foto: '' };
+  }
+  stampaHtml(t, n) {
+    const e = x => String(x || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const sc = 'scr' + 'ipt';
+    const img = t.foto ? `<img class="f" src="${e(t.foto)}" alt="">` : '';
+    const logo = `<img class="l" src="${new URL('assets/logo-round.png', location.href).href}" alt="">`;
+    return `<!doctype html><html><head><meta charset="utf-8"><title>Targhetta ${n}</title><link rel="stylesheet" href="${new URL('fonts/fonts.css', location.href).href}"><style>@page{size:A4;margin:20mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{margin:0;display:flex;justify-content:center}.t{width:160mm;height:70mm;box-sizing:border-box;border:.4mm solid #2A1608;border-radius:4mm;padding:3mm 6mm;display:flex;align-items:center;gap:5mm;position:relative;color:#2A1608;font-family:Newsreader,Georgia,serif}.t:before,.t:after{content:"";position:absolute;top:3.5mm;width:3mm;height:3mm;border-radius:50%;border:.4mm solid #2A1608}.t:before{left:3.5mm}.t:after{right:3.5mm}.l{width:64mm;height:64mm;object-fit:contain;flex:none}.f{width:auto;height:60mm;max-width:62mm;object-fit:contain;border-radius:1.5mm;flex:none}.x{flex:1;text-align:center}.k{font:600 9.5pt Karla,sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-top:3mm;white-space:nowrap}.n{font-size:30pt;font-weight:500;line-height:1.05}.a{font:9pt Karla,sans-serif;margin-top:1mm;white-space:nowrap}.d{font-style:italic;font-size:16pt;margin-top:3mm}.i{font:10.5pt Karla,sans-serif;margin-top:1.5mm}</style></head><body><div class="t">${logo}<div class="x"><div class="n">${e(t.nome)}</div><div class="d">${e(t.detto)}</div><div class="i">${e(t.trad)}</div><div class="k">Albero n. ${n}</div><div class="a">${e(t.data)}</div></div>${img}</div><${sc}>Promise.all([document.fonts.ready].concat([].map.call(document.images,function(i){return i.complete?0:new Promise(function(r){i.onload=i.onerror=r})}))).then(function(){setTimeout(function(){print()},300)})</${sc}></body></html>`;
+  }
+  renderVals() {
+    const S = window.SEF, el = this.state.elenco;
+    if (!S || !el) return {
+      nonLoggato: true, loggato: false, demo: !!(S && S.demo), errore: this.state.errore,
+      testoEntra: this.state.occupato === 'entra' ? 'Accesso…' : 'Entra',
+      accedi: e => { e.preventDefault(); const m = String(new FormData(e.target).get('master') || ''); this.pronto(() => this.entra(m)); },
+      avviso: this.state.avviso
+    };
+    const a = this.albero(), b = this.bozza(), n = a.numero, occ = this.state.occupato;
+    const stato = a.stato || '';
+    const tg = this.targhetta(a); tg.haFoto = !!tg.foto;
+    const bz = this.bozza(), mt = S.metallo({ targa: bz.targa, formula: bz.formula }), tm = Object.assign({}, mt, { img: "url('" + mt.bg + "')" }), tmAuto = S.METALLI[S.FORMULA_METALLO[bz.formula] || 'bronzo'].nome;
+    const ST = { '': ['Da scegliere', 'color-mix(in srgb, var(--color-text) 8%, var(--color-bg))', '#4A4440'], inviato: ['Da approvare', 'color-mix(in srgb, #E8A838 26%, var(--color-bg))', '#5A3D08'], approvato: ['Approvata', 'color-mix(in srgb, #0D6E08 14%, var(--color-bg))', '#0A4A06'], respinto: ['Da rifare', 'color-mix(in srgb, #B3261E 12%, var(--color-bg))', '#7A2A1E'] }[stato] || ['—', 'transparent', 'inherit'];
+    const conf = el.length, kg = (a.diario || []).filter(x => x.tipo === 'Raccolta').reduce((s, x) => s + (parseFloat(String(x.kg).replace(',', '.')) || 0), 0);
+    const modifica = e => this.setState({ bozza: Object.assign({}, b, { [e.target.name]: e.target.value }), sporco: true });
+    return {
+      tm, tmAuto,
+      nonLoggato: false, loggato: true, demo: S.demo, errore: '', avviso: this.state.avviso,
+      conteggio: conf + (conf === 1 ? ' albero adottato' : ' alberi adottati') + ' su 100',
+      numero: this.state.numero, numeroPad: n,
+      numeri: Array.from({ length: 100 }, (_, i) => { const p = S.pad(i + 1), x = el.find(z => z.numero === p); return { v: i + 1, label: p + (x ? ' · ' + (x.adottante || 'adottato') + (x.stato === 'inviato' ? ' · da approvare' : '') : '') }; }),
+      cambiaAlbero: e => this.vai(+e.target.value),
+      ricarica: () => this.entra(this.state.master),
+      esci: () => { try { sessionStorage.removeItem(this.KEY); } catch (e) {} this.setState({ master: '', elenco: null, bozza: null, sporco: false }); },
+      daApprovare: el.filter(x => x.stato === 'inviato').map(x => ({ label: 'n. ' + x.numero + (x.adottante ? ' · ' + x.adottante : ''), vai: () => this.vai(+x.numero) })),
+      haDaApprovare: el.some(x => x.stato === 'inviato'),
+      statoTesto: ST[0], statoBg: ST[1], statoFg: ST[2],
+      fotoTg: tg.foto ? React.createElement('img', { src: tg.foto, alt: 'Foto sulla targhetta', style: { display: 'block', width: '100%', height: '100%', objectFit: 'cover' } }) : null,
+      tg,
+      dataAdozione: a.inizio ? 'Adottato il ' + S.data(a.inizio) : '',
+      motivoTesto: stato === 'respinto' ? 'Hai chiesto di rifarla' + (a.motivo ? ': ' + a.motivo : '.') : (stato === 'inviato' ? 'Inviata il ' + S.data(a.inviatoIl) + '.' : ''),
+      inAttesa: stato === 'inviato', approvata: stato === 'approvato', puoStampare: !!(a.nomeProposto || a.nomePianta),
+      approva: () => this.esegui('mApprova', {}, 'Targhetta approvata'),
+      respingi: () => { const m = prompt("Cosa deve cambiare? Lo leggerà l'adottante.", ''); if (m === null) return; this.esegui('mRespingi', { motivo: m }, "Richiesta inviata all'adottante"); },
+      riapri: () => { if (confirm("L'adottante potrà scegliere di nuovo nome, detto e foto. Continuare?")) this.esegui('mRiapri', {}, 'Scelta riaperta'); },
+      stampa: () => { const w = window.open('', '_blank'); if (!w) { this.avvisa('Consenti le finestre popup per stampare'); return; } w.document.write(this.stampaHtml(Object.assign({ data: a.inizio ? 'Adottato il ' + S.data(a.inizio) : '' }, tg), n)); w.document.close(); },
+      oggi: S.oggi(),
+      testoCaricaFoto: occ === 'mFoto' ? 'Caricamento…' : 'Carica la foto',
+      caricaFoto: e => {
+        e.preventDefault();
+        const f = e.target, fd = new FormData(f), file = fd.get('file');
+        if (!file || !file.size) return;
+        S.leggiFoto(file, 1600).then(u => this.esegui('mFoto', { foto: u, data: fd.get('data'), nota: String(fd.get('nota') || '') }, 'Foto caricata', () => { f.reset(); }), () => this.avvisa('Questa foto non si riesce a leggere.'));
+      },
+      foto: (a.foto || []).map(f => ({ src: f.src, nota: f.nota, data: S.dataBreve(f.data), elimina: () => { if (confirm('Eliminare questa foto?')) this.esegui('mEliminaFoto', { id: f.id }, 'Foto eliminata'); } })),
+      b,
+      campi: [
+        { label: 'Adottante', name: 'adottante', type: 'text', val: b.adottante, ph: 'Nome e cognome' },
+        { label: 'Email', name: 'email', type: 'email', val: b.email, ph: 'per la conferma' },
+        { label: 'Inizio adozione', name: 'inizio', type: 'date', val: b.inizio, ph: '' },
+        { label: 'Posizione', name: 'posizione', type: 'text', val: b.posizione, ph: 'Filare 4, pianta 12' },
+        { label: 'Piantato', name: 'impianto', type: 'text', val: b.impianto, ph: 'Anni Ottanta' },
+        { label: 'Ultima raccolta', name: 'ultimaRaccolta', type: 'text', val: b.ultimaRaccolta, ph: 'Settembre 2026, verdello' },
+        { label: 'Link al certificato', name: 'certificato', type: 'url', val: b.certificato, ph: 'https://…' }
+      ],
+      modifica,
+      generaPassword: () => modifica({ target: { name: 'password', value: ['zagara', 'limone', 'etna', 'verdello', 'fiore', 'scirocco'][Math.floor(Math.random() * 6)] + '-' + (1000 + Math.floor(Math.random() * 9000)) } }),
+      testoSalva: occ === 'mSalva' ? 'Salvataggio…' : 'Salva i dati',
+      statoSalvataggio: this.state.sporco ? 'Modifiche non salvate' : (el.some(z => z.numero === n) ? 'Tutto salvato' : 'Albero non ancora adottato'),
+      salva: () => {
+        if (!String(b.password).trim()) { this.avvisa("Imposta una password per l'adottante"); return; }
+        this.esegui('mSalva', { albero: Object.assign({ numero: n }, b) }, 'Dati salvati', () => this.setState({ bozza: null, sporco: false }));
+      },
+      consegne: (a.consegne || []).map((c, i) => ({ quando: c.quando, cosa: c.cosa, stato: c.stato, elimina: () => this.esegui('mSalva', { albero: { numero: n, consegne: (a.consegne || []).filter((_, j) => j !== i) } }, 'Consegna eliminata') })),
+      aggiungiConsegna: e => {
+        e.preventDefault();
+        const f = e.target, fd = new FormData(f);
+        this.esegui('mSalva', { albero: { numero: n, consegne: (a.consegne || []).concat({ quando: fd.get('quando'), cosa: fd.get('cosa'), stato: fd.get('stato') }) } }, 'Consegna aggiunta', () => f.reset());
+      },
+      fondoInfo: (() => { const p = this.fondo(), F = window.SEF_FONDO; if (!F) return ''; const r = (F.rilievi || []).filter(x => x.pianta === this.state.numero).map(x => S.dataBreve(x.data) + ': ' + x.stato.toLowerCase() + ', ' + x.nota).join(' '); return p ? 'Gestionale di campo: filare ' + p.filare + ', ' + p.varieta + ' del ' + p.anno + ', stato ' + p.stato.toLowerCase() + '.' + (r ? ' ' + r : '') : (r || 'Pianta non ancora mappata nel gestionale di campo.'); })(),
+      comuni: ((window.SEF_FONDO && window.SEF_FONDO.interventiComuni) || []).filter(c => !(a.diario || []).some(x => x.data === c.data && x.tipo === c.tipo)).map(c => ({ label: c.tipo + ' del ' + S.dataBreve(c.data), aggiungi: () => this.esegui('mDiario', { tipo: c.tipo, data: c.data, testo: c.testo }, 'Aggiunto dal gestionale') })),
+      haComuni: ((window.SEF_FONDO && window.SEF_FONDO.interventiComuni) || []).some(c => !(a.diario || []).some(x => x.data === c.data && x.tipo === c.tipo)),
+      totaleKg: kg ? 'Raccolto registrato: ' + kg.toLocaleString('it-IT') + ' kg' : '',
+      tipi: Object.keys(this.TIPI).map(v => ({ v })),
+      nuovoTipo: this.state.nuovoTipo,
+      cambiaTipo: e => this.setState({ nuovoTipo: e.target.value }),
+      isRaccolta: this.state.nuovoTipo === 'Raccolta',
+      placeholderDiario: this.TIPI[this.state.nuovoTipo][1],
+      aggiungiDiario: e => {
+        e.preventDefault();
+        const f = e.target, fd = new FormData(f);
+        this.esegui('mDiario', { tipo: this.state.nuovoTipo, data: fd.get('data'), testo: String(fd.get('testo') || ''), kg: String(fd.get('kg') || '') }, 'Aggiunto al diario', () => { f.querySelector('[name=testo]').value = ''; const k = f.querySelector('[name=kg]'); if (k) k.value = ''; });
+      },
+      diario: (a.diario || []).map(x => ({ data: S.dataBreve(x.data), tipo: x.tipo, colore: (this.TIPI[x.tipo] || ['#4A4440'])[0], testo: x.tipo === 'Raccolta' && x.kg ? [x.testo, x.kg + ' kg'].filter(Boolean).join(' · ') : x.testo, elimina: () => { if (confirm('Eliminare questa voce?')) this.esegui('mEliminaDiario', { id: x.id }, 'Voce eliminata'); } }))
+    };
+  }
+}
+</script>
+</body>
+</html>

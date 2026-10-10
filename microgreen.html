@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<title>Microgreen — Super Etna Food</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/styles.css">
+<script src="ds/ds-bundle.js"></script>
+<script src="image-slot.js"></script>
+<script>
+(function () {
+  var KEY = 'sef-consenso-analytics';
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-VLG2FVLNDM';
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', 'G-VLG2FVLNDM', { anonymize_ip: true });
+  }
+  function hide(b) { b.style.display = 'none'; }
+  function init() {
+    var b = document.getElementById('privacy-banner');
+    if (!b) return;
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved === 'si') { hide(b); loadAnalytics(); return; }
+    if (saved === 'no') { hide(b); return; }
+    b.style.display = 'block';
+    var ok = document.getElementById('privacy-accetta');
+    var no = document.getElementById('privacy-rifiuta');
+    if (ok) ok.addEventListener('click', function () {
+      try { localStorage.setItem(KEY, 'si'); } catch (e) {}
+      hide(b); loadAnalytics();
+    });
+    if (no) no.addEventListener('click', function () {
+      try { localStorage.setItem(KEY, 'no'); } catch (e) {}
+      hide(b);
+    });
+  }
+  var t = setInterval(function () { if (document.getElementById('privacy-banner')) { clearInterval(t); init(); } }, 200);
+  setTimeout(function () { clearInterval(t); }, 8000);
+})();
+</script>
+
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root { --font-heading: 'Newsreader', Georgia, serif; --font-body: 'Karla', system-ui, sans-serif; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--font-body); font-size: 17px; text-wrap: pretty; overflow-x: hidden; }
+  h1, h2, h3, blockquote, th, .nav-brand { font-family: var(--font-heading); }
+  .nav, .btn, .table td, .tag { font-family: var(--font-body); }
+  a { color: #0A5806; }
+  a:hover { color: #0D6E08; }
+  img { max-width: 100%; height: auto; }
+  :focus-visible { outline: 2px solid #E8A838; outline-offset: 2px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "kicker photo" "text photo"; align-items: center; column-gap: clamp(24px, 4vw, 48px); }
+  .hero-kicker { grid-area: kicker; align-self: end; }
+  .hero-text { grid-area: text; }
+  .hero-photo { grid-area: photo; }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; grid-template-areas: "kicker" "photo" "text"; row-gap: 20px; }
+    .hero-kicker { align-self: auto; }
+    .proposte-grid { grid-template-columns: 1fr !important; }
+    .proposte-grid > div:last-child { grid-column: 1 !important; }
+    .varieta-list .varieta-row:first-child { display: none; }
+    .varieta-list .varieta-row { grid-template-columns: 1fr !important; gap: 4px !important; padding: 16px 0 !important; }
+    .varieta-list .varieta-row > span[data-label]::before { content: attr(data-label) ": "; font-weight: 600; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+  }
+
+  image-slot, image-slot * { touch-action: pan-y !important; }
+  @media (pointer: coarse) { image-slot { pointer-events: none !important; } }
+  .nav-toggle { display: none; }
+  .nav-burger { display: none; }
+  .nav-links { display: flex; align-items: center; flex-wrap: nowrap; gap: clamp(5px, 0.8vw, 10px); flex: 1 1 auto; min-width: 0; }
+  .nav-links > a.nav-plate:first-child { margin-left: auto; }
+  .nav-links > a.nav-plate[href^="zafferano"] { padding-left: clamp(6px, 1.05vw, 17px); padding-right: clamp(6px, 1.05vw, 17px); }
+  .nav-links > a.nav-plate[href^="limoni"] { padding-left: clamp(14px, 2.3vw, 40px); padding-right: clamp(14px, 2.3vw, 40px); }
+  .nav-links > a.nav-plate[href^="chi-siamo"] { padding-left: clamp(14px, 2.3vw, 40px); padding-right: clamp(14px, 2.3vw, 40px); }
+  .nav-links > a.btn { margin-left: auto; flex: 0 1 auto; height: 76px; padding-left: clamp(14px, 1.8vw, 28px); padding-right: clamp(14px, 1.8vw, 28px); white-space: nowrap; box-sizing: border-box; align-items: center; }
+  .nav { padding-left: max(clamp(16px, 5vw, 72px), calc((100% - 1280px) / 2 + clamp(16px, 5vw, 72px))) !important; padding-right: max(clamp(16px, 5vw, 72px), calc((100% - 1280px) / 2 + clamp(16px, 5vw, 72px))) !important; }
+  @media (max-width: 1180px) {
+    .nav { padding: 10px clamp(16px, 5vw, 72px) !important; align-items: center; }
+    .nav-brand img { height: 46px !important; }
+    .nav-burger { margin-left: auto; display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 46px; height: 46px; padding: 10px; box-sizing: border-box; cursor: pointer; border-radius: 10px; background: color-mix(in srgb, #3A1B08 16%, transparent); }
+    .nav-burger span { display: block; height: 2px; background: #3A1B08; border-radius: 2px; }
+    .nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: 2px; padding: 6px 0 8px; flex: 0 0 auto; }
+    .nav-toggle:checked ~ .nav-links { display: flex; }
+    .nav-links > a { padding: 12px 0; min-height: 44px; display: flex; align-items: center; font-size: 21px !important; }
+    .nav-links > a.btn { margin: 10px 0 0 0 !important; width: 100%; min-height: 50px; justify-content: center; box-sizing: border-box; }
+  }
+  a.nav-plate { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 76px; min-width: 0; flex: 0 1 auto; padding: 0 clamp(10px, 1.6vw, 26px); box-sizing: border-box; border-radius: 5px; background-color: #B98868; background-image: url('assets/targa-fascia.jpg'); background-size: cover; background-position: center; border: none; box-shadow: none; -webkit-mask-image: radial-gradient(115% 130% at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%); mask-image: radial-gradient(115% 130% at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%); color: #F7E9CF; text-shadow: 0 1px 2px rgba(36,16,4,0.7); font-weight: 700; font-size: clamp(17px, 1.5vw, 22px); white-space: nowrap; text-decoration: none; }
+  .nav-links > a.nav-plate { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 clamp(10px, 1.6vw, 26px); }
+  @media (min-width: 1181px) { .nav { flex-wrap: nowrap !important; } .nav-links { flex-wrap: nowrap; } }
+  @media (min-width: 1181px) and (max-width: 1480px) {
+    .nav { padding-left: 24px !important; padding-right: 24px !important; gap: 12px !important; }
+    a.nav-plate-home { margin-right: 4px; gap: 10px; }
+    a.nav-plate-home img { height: 72px !important; width: 72px !important; }
+    .nav-links > a.nav-plate, .nav-links > a.nav-plate[href^="limoni"], .nav-links > a.nav-plate[href^="chi-siamo"], .nav-links > a.nav-plate[href^="zafferano"] { padding-left: 12px !important; padding-right: 12px !important; font-size: 18px !important; }
+    .nav-links > a.btn { font-size: 16px !important; padding-left: 14px !important; padding-right: 14px !important; }
+  }
+  @media (min-width: 1181px) { .nav-links > a.nav-plate, .nav-links > a.nav-plate[href] { flex: 1 1 0 !important; min-width: 0 !important; padding-left: 8px !important; padding-right: 8px !important; margin-left: 0 !important; } .nav-links { margin-left: clamp(8px, 1.5vw, 24px); } }
+  a.nav-plate:hover { background-color: #C99A7B; color: #FFF3DC; }
+  a.nav-plate[aria-current="page"] { color: #FFF3DC; background-color: #8E5F3E; }
+  .nav-glyph { display: block; position: relative; flex: 0 0 auto; }
+  .nav-glyph i { position: absolute; display: block; }
+  .nav-glyph-lemon { width: 28px; height: 19px; background: linear-gradient(160deg, #FFE58A 0%, #FFD84D 45%, #F2B90E 100%); clip-path: path('M 0,9.5 C 1,3.5 6,0 14,0 C 22,0 27,3.5 28,9.5 C 27,15.5 22,19 14,19 C 6,19 1,15.5 0,9.5 Z'); }
+  .nav-glyph-sprout { width: 34px; height: 22px; }
+  .nav-glyph-sprout .st1 { left: 6px; bottom: 6px; width: 2px; height: 8px; background: #E86A93; }
+  .nav-glyph-sprout .st2 { left: 12px; bottom: 6px; width: 2px; height: 8px; background: #F2A0BC; }
+  .nav-glyph-sprout .st3 { left: 18px; bottom: 6px; width: 2px; height: 8px; background: #E86A93; }
+  .nav-glyph-sprout .st4 { left: 24px; bottom: 6px; width: 2px; height: 8px; background: #F2A0BC; }
+  .nav-glyph-sprout .mass { left: 1px; top: 0; width: 32px; height: 11px; border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%; background: linear-gradient(#8FCC63, #4E8B3A); }
+  .nav-glyph-sprout .tuft-l { left: 5px; top: -2px; width: 9px; height: 7px; border-radius: 50%; background: #9AD46E; }
+  .nav-glyph-sprout .tuft-r { left: 19px; top: -1px; width: 8px; height: 6px; border-radius: 50%; background: #7FBF5A; }
+  .nav-glyph-sprout .tray { left: 2px; bottom: 0; width: 30px; height: 6px; border-radius: 1px 1px 3px 3px; background: linear-gradient(#8E5F3E, #5C3A22); }
+  .nav-glyph-crocus { width: 26px; height: 17px; }
+  .nav-glyph-crocus .pt { bottom: 0; width: 9px; height: 14px; border-radius: 50% 50% 42% 42%; background: #B983D8; }
+  .nav-glyph-crocus .pt-l { left: 0; transform: rotate(-24deg); }
+  .nav-glyph-crocus .pt-c { left: 8.5px; }
+  .nav-glyph-crocus .pt-r { right: 0; transform: rotate(24deg); }
+  .nav-glyph-crocus .st { top: 0; width: 2px; height: 7px; border-radius: 1px; background: #E2622A; }
+  .nav-glyph-crocus .st-l { left: 9px; transform: rotate(-26deg); }
+  .nav-glyph-crocus .st-c { left: 12.5px; }
+  .nav-glyph-crocus .st-r { left: 16px; transform: rotate(26deg); }
+  .nav-glyph-leaf { width: 28px; height: 14px; }
+  .nav-glyph-leaf .lf { top: 0; width: 15px; height: 10px; border-radius: 100% 0 100% 0; background: #7FBF5A; }
+  .nav-glyph-leaf .lf-l { left: 0; transform: rotate(-8deg); }
+  .nav-glyph-leaf .lf-r { right: 0; transform: rotate(172deg); background: #5F9E3E; }
+  .nav-glyph-lock { width: 16px; height: 18px; }
+  .nav-glyph-lock .sh { left: 3px; top: 0; width: 10px; height: 10px; box-sizing: border-box; border: 2.5px solid #FFD84D; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .nav-glyph-lock .bd { left: 0; bottom: 0; width: 16px; height: 10px; border-radius: 2px; background: linear-gradient(#FFE58A, #F2B90E); }
+  a.nav-plate-home { flex-direction: row; justify-content: flex-start; gap: 13px; min-width: 0; margin-right: 16px; padding: 0 16px 0 0; height: auto; background: none; -webkit-mask-image: none; mask-image: none; }
+  a.nav-plate-home img { height: clamp(68px, 7.2vw, 108px); width: clamp(68px, 7.2vw, 108px); border-radius: 50%; display: block; flex: 0 0 auto; }
+  .nav-plate-bar { display: block; width: 26px; height: 3px; border-radius: 2px; }
+  @media (max-width: 1180px) {
+    .nav-links { gap: 8px !important; }
+    .nav-links > a.nav-plate:first-child { margin-left: 0; }
+    .nav-links > a.nav-plate { flex-direction: row; justify-content: flex-start; gap: 12px; width: 100%; min-height: 52px; height: auto; flex: 0 0 auto; padding: 12px 16px !important; font-size: 21px !important; }
+    .nav-links > a.nav-plate .nav-plate-bar { width: 5px; height: 22px; margin-left: auto; }
+    .nav-links > a.nav-plate .nav-glyph { margin-left: auto; transform: scale(1.25); transform-origin: right center; }
+    .nav-glyph-lock { width: 16px; height: 18px; }
+  .nav-glyph-lock .sh { left: 3px; top: 0; width: 10px; height: 10px; box-sizing: border-box; border: 2.5px solid #FFD84D; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .nav-glyph-lock .bd { left: 0; bottom: 0; width: 16px; height: 10px; border-radius: 2px; background: linear-gradient(#FFE58A, #F2B90E); }
+  a.nav-plate-home { margin-right: 0; }
+  }
+
+</style>
+</helmet>
+
+<nav class="nav" style="padding: 12px clamp(16px, 5vw, 72px); flex-wrap: wrap; gap: 10px 20px; background-color: #B98868; background-image: url('assets/targa-fascia.jpg'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; border: 0">
+  <a class="nav-plate nav-plate-home" href="index.html" aria-label="Super Etna Food — torna alla home"><img src="assets/logo-round.png" alt="">Home</a>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+  <label for="nav-toggle" class="nav-burger" aria-label="Apri il menù"><span></span><span></span><span></span></label>
+  <div class="nav-links">
+  <a class="nav-plate" href="limoni.html"><span>Limoni</span><span class="nav-glyph nav-glyph-lemon"></span></a>
+  <a class="nav-plate" href="microgreen.html" aria-current="page"><span>Microgreen</span><span class="nav-glyph nav-glyph-sprout"><i class="st1"></i><i class="st2"></i><i class="st3"></i><i class="st4"></i><i class="mass"></i><i class="tuft-l"></i><i class="tuft-r"></i><i class="tray"></i></span></a>
+  <a class="nav-plate" href="zafferano.html"><span>Zafferano</span><span class="nav-glyph nav-glyph-crocus"><i class="pt pt-l"></i><i class="pt pt-c"></i><i class="pt pt-r"></i><i class="st st-l"></i><i class="st st-c"></i><i class="st st-r"></i></span></a>
+  <a class="nav-plate" href="chi-siamo.html"><span>Il Fondo</span><span class="nav-glyph nav-glyph-leaf"><i class="lf lf-l"></i><i class="lf lf-r"></i></span></a>
+  <a class="nav-plate" href="area-riservata.html"><span>Area riservata</span><span class="nav-glyph nav-glyph-lock"><i class="sh"></i><i class="bd"></i></span></a>
+  <a class="btn" style="background: #25D366; color: #0B2E10; border-color: #25D366; font-weight: 600; font-size: 18px; border-radius: 999px; white-space: nowrap" href="https://wa.me/393515286188" target="_blank" rel="noopener">Scrivimi su WhatsApp</a>
+  </div>
+</nav>
+
+<section style="background: #0D6E08">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 72px)">
+    <div class="hero-grid" style="padding: clamp(14px, 2vw, 24px) 0 clamp(36px, 6vw, 64px)">
+      <span class="hero-kicker" style="display: block; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, #ffffff 78%, transparent); margin-bottom: 16px">Semina a chiamata · Acireale</span>
+      <div class="hero-text" style="min-width: 0">
+        <h1 style="font-weight: 500; font-size: clamp(34px, 5.4vw, 58px); line-height: 1.06; letter-spacing: -0.02em; margin: 0; color: #ffffff">Microgreen che arrivano in cucina il giorno del taglio</h1>
+        <p style="font-size: clamp(16.5px, 1.6vw, 19px); line-height: 1.65; margin: 20px 0 0; max-width: 42ch; color: color-mix(in srgb, #ffffff 86%, transparent)">Si semina quando ordini, si taglia quando passi. In mezzo solo acqua di falda e luce.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px 36px; margin-top: 30px">
+          <div>
+            <span style="display: block; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, #ffffff 64%, transparent); margin-bottom: 6px">Semi</span>
+            <p style="font-family: var(--font-heading); font-weight: 500; font-size: 20px; line-height: 1.3; margin: 0; color: #ffffff">Biologici, non conciati</p>
+          </div>
+          <div>
+            <span style="display: block; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, #ffffff 64%, transparent); margin-bottom: 6px">Substrato</span>
+            <p style="font-family: var(--font-heading); font-weight: 500; font-size: 20px; line-height: 1.3; margin: 0; color: #ffffff">Fibra di cocco o compost</p>
+          </div>
+          <div>
+            <span style="display: block; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, #ffffff 64%, transparent); margin-bottom: 6px">Acqua</span>
+            <p style="font-family: var(--font-heading); font-weight: 500; font-size: 20px; line-height: 1.3; margin: 0; color: #ffffff">Pozzo sotto la lava</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap">
+          <a class="btn" style="background: #25D366; color: #0B2E10; border-color: #25D366; font-weight: 600; font-size: 18px; border-radius: 999px" href="https://wa.me/393515286188" target="_blank" rel="noopener">Scrivimi su WhatsApp</a>
+          <a class="btn" style="background: #E8A838; color: #33230A; border-color: #E8A838; font-weight: 600; font-size: 18px; border-radius: 999px" href="#formati">I formati</a>
+        </div>
+      </div>
+      <figure class="hero-photo" style="margin: 0; min-width: 0">
+        <div style="height: clamp(280px, 42vw, 480px); border-radius: 18px; overflow: hidden"><image-slot id="mg-hero" shape="rect" fit="cover" src="assets/microgreen-vassoio.jpg" role="img" aria-label="Vassoi di microgreen pronti al taglio" placeholder="Foto dei vassoi in serra" style="display: block; width: 100%; height: 100%"></image-slot></div>
+        <figcaption style="font-family: var(--font-heading); font-style: italic; font-size: 19px; line-height: 1.5; color: color-mix(in srgb, #ffffff 88%, transparent); margin-top: 14px">Vassoi a due giorni dal taglio.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 72px)">
+
+  <section id="varieta" style="padding: clamp(44px, 7vw, 80px) 0 0">
+    <h2 style="font-weight: 500; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 24px">Le varietà, dove metterle</h2>
+    <div class="varieta-list" style="display: flex; flex-direction: column; border-top: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent)">
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent)">
+        <span style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Varietà</span>
+        <span style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Sapore</span>
+        <span style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 60%, transparent)">In cucina</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Ravanello Red Rubin</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Piccante, asciutto</span><span data-label="In cucina" style="font-size: 16px">Sul crudo di pesce, sui crostini, dove serve una punta pungente.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Rucola Matisse</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Amarognolo</span><span data-label="In cucina" style="font-size: 16px">Carpacci, insalate, sulla pizza appena uscita dal forno.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Girasole Ukko</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Dolce, croccante</span><span data-label="In cucina" style="font-size: 16px">Nel panino e nelle insalate: dà mordente più che sapore.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Pisello Viridios</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Dolce</span><span data-label="In cucina" style="font-size: 16px">Con limone e avocado, su seppie e polpo in bianco, o in purea sotto la carne.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Coriandolo Split Giano</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Agrumato, insistente</span><span data-label="In cucina" style="font-size: 16px">Ceviche, zuppe orientali, pesce crudo.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Nasturzio Woodland</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Pepato</span><span data-label="In cucina" style="font-size: 16px">Nei cocktail e sulle zuppe, quando il piatto va chiuso con qualcosa.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Pak Choi Panda</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Appena amaro</span><span data-label="In cucina" style="font-size: 16px">Base del ramen; buono anche saltato in padella un minuto.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Purciddana (portulaca)</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Acidulo, carnoso</span><span data-label="In cucina" style="font-size: 16px">L'insalata d'agosto con pomodoro, cetriolo e cipolla; o le cime in pastella.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <span style="font-family: var(--font-heading); font-size: 19px">Cavolo rapa Rosso Bacco</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Dolce, terroso</span><span data-label="In cucina" style="font-size: 16px">A crudo con olio buono, o due minuti in padella.</span>
+      </div>
+      <div class="varieta-row" style="display: grid; grid-template-columns: 1.4fr 1fr 2.2fr; gap: 16px; padding: 16px 0">
+        <span style="font-family: var(--font-heading); font-size: 19px">Senape rossa</span><span data-label="Sapore" style="font-size: 16px; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Piccante</span><span data-label="In cucina" style="font-size: 16px">Su primi, secondi e panini, al posto della senape del barattolo.</span>
+      </div>
+    </div>
+    <p style="font-size: 19px; line-height: 1.7; margin: 20px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent)">Alcune varietà seguono la stagione: chiedimi in chat se sono disponibili.</p>
+  </section>
+
+  <section id="formati" style="padding: clamp(44px, 7vw, 80px) 0 0">
+    <figure style="margin: 0 0 32px">
+      <div style="aspect-ratio: 21 / 9; border-radius: 18px; overflow: hidden"><image-slot id="mg-vassoi-serra" shape="rect" fit="cover" src="assets/microgreen-vassoi-serra.jpg" role="img" aria-label="Vassoi di microgreen in coltivazione, ravanello rosso fra due file di verde" placeholder="I vassoi in coltivazione" style="display: block; width: 100%; height: 100%"></image-slot></div>
+      <figcaption style="font-family: var(--font-heading); font-style: italic; font-size: 20px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 88%, transparent); margin-top: 14px">Vassoi in coltivazione: ogni fila è una semina diversa.</figcaption>
+    </figure>
+    <h2 style="font-weight: 500; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 16px">I formati</h2>
+    <p style="font-size: 19px; line-height: 1.7; margin: 0 0 24px; color: color-mix(in srgb, var(--color-text) 80%, transparent)">La vaschetta piccola per casa, i formati grandi e il vassoio vivo per le cucine. Nasturzio, calendula, basilico nero e senape nera stanno in una fascia a parte.</p>
+    <div style="overflow-x: auto">
+      <table class="table" style="font-size: 18px; min-width: 620px">
+        <thead>
+          <tr><th style="width: 26%">Per chi</th><th style="width: 30%">Formato</th><th>Come funziona</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Privati e mercato</td><td style="font-family: var(--font-heading); font-size: 20px">Vaschetta 40 g</td><td>La misura di casa: basta per due o tre piatti, si tiene in frigo pochi giorni.</td></tr>
+          <tr><td>Ristorazione</td><td style="font-family: var(--font-heading); font-size: 20px">100 g</td><td>Per chi usa i microgreen su un piatto fisso del menù.</td></tr>
+          <tr><td>Ristorazione</td><td style="font-family: var(--font-heading); font-size: 20px">250 g</td><td>Servizio pieno, o più varietà nello stesso ordine.</td></tr>
+          <tr><td>Cucine</td><td style="font-family: var(--font-heading); font-size: 20px">Vassoio vivo 30×60</td><td>Intero e non tagliato: si taglia in cucina, giorno per giorno.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 19px; line-height: 1.7; margin: 18px 0 0; color: color-mix(in srgb, var(--color-text) 78%, transparent)"></p>
+  </section>
+
+  <section style="padding: clamp(44px, 7vw, 80px) 0 0">
+    <h2 style="font-weight: 500; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; letter-spacing: -0.02em; margin: 0">Fiori commestibili ed erbe</h2>
+    <p style="font-size: 19px; line-height: 1.7; margin: 16px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent)"></p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(20px, 3vw, 32px); margin-top: 28px">
+      <figure style="margin: 0">
+        <div style="aspect-ratio: 4 / 3"><image-slot id="mg-fiori-portulaca" shape="rect" fit="cover" src="assets/portulaca-fiori.jpg" role="img" aria-label="Vaschetta di fiori di portulaca gialli, rosa e aranciati" placeholder="Fiori di portulaca" style="display: block; width: 100%; height: 100%"></image-slot></div>
+        <figcaption style="font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 65%, transparent); margin-top: 8px">Fiori di purciddana, tre colori nella stessa vaschetta.</figcaption>
+      </figure>
+      <figure style="margin: 0">
+        <div style="aspect-ratio: 4 / 3"><image-slot id="mg-portulaca-basilico" shape="rect" fit="cover" src="assets/portulaca-basilico.jpg" role="img" aria-label="Fiori di portulaca fucsia e basilico rosso in fiore" placeholder="Portulaca e basilico rosso" style="display: block; width: 100%; height: 100%"></image-slot></div>
+        <figcaption style="font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 65%, transparent); margin-top: 8px">Purciddana fucsia e basilico rosso in fiore.</figcaption>
+      </figure>
+      <figure style="margin: 0">
+        <div style="aspect-ratio: 4 / 3"><image-slot id="mg-basilico-calendula" shape="rect" fit="cover" src="assets/basilico-calendula.jpg" role="img" aria-label="Basilico rosso, calendula e germogli di portulaca in vaschetta" placeholder="Basilico rosso e calendula" style="display: block; width: 100%; height: 100%"></image-slot></div>
+        <figcaption style="font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 65%, transparent); margin-top: 8px">Basilico rosso, calendula e cime di purciddana.</figcaption>
+      </figure>
+      <figure style="margin: 0">
+        <div style="aspect-ratio: 4 / 3"><image-slot id="mg-erbe" shape="rect" fit="cover" src="assets/erbe-aromatiche.jpg" role="img" aria-label="Erba cipollina, aneto, timo, menta, rosmarino e acetosa" placeholder="Erbe aromatiche" style="display: block; width: 100%; height: 100%"></image-slot></div>
+        <figcaption style="font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 65%, transparent); margin-top: 8px">Erba cipollina, aneto, timo, menta, rosmarino, acetosa.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section style="padding: clamp(40px, 6vw, 72px) 0 0">
+    <h2 style="font-weight: 500; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 28px">Tre proposte, sempre le stesse</h2>
+    <div class="proposte-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: color-mix(in srgb, var(--color-text) 14%, transparent); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md)">
+      <div style="background: var(--color-bg); padding: 28px 24px; display: flex; flex-direction: column; gap: 10px">
+        <span style="width: 40px; height: 40px; border-radius: 50%; background: #F5E11A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 17px">1</span>
+        <h3 style="font-weight: 600; font-size: 21px; line-height: 1.3; margin: 6px 0 0">Box degustazione</h3>
+        <p style="font-size: 17px; line-height: 1.55; margin: 0; color: color-mix(in srgb, var(--color-text) 78%, transparent)">Cinque varietà da 40 g in un ordine solo, per capire cosa tenere in cucina.</p>
+      </div>
+      <div style="background: var(--color-bg); padding: 28px 24px; display: flex; flex-direction: column; gap: 10px">
+        <span style="width: 40px; height: 40px; border-radius: 50%; background: #F5E11A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 17px">2</span>
+        <h3 style="font-weight: 600; font-size: 21px; line-height: 1.3; margin: 6px 0 0">Consegna ricorrente</h3>
+        <p style="font-size: 17px; line-height: 1.55; margin: 0; color: color-mix(in srgb, var(--color-text) 78%, transparent)">Ordine settimanale con impegno mensile: condizioni dedicate e semina sul tuo menù.</p>
+      </div>
+      <div style="background: var(--color-bg); padding: 28px 24px; display: flex; flex-direction: column; gap: 10px">
+        <span style="width: 40px; height: 40px; border-radius: 50%; background: #F5E11A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 17px">3</span>
+        <h3 style="font-weight: 600; font-size: 21px; line-height: 1.3; margin: 6px 0 0">Prima vaschetta in prova</h3>
+        <p style="font-size: 17px; line-height: 1.55; margin: 0; color: color-mix(in srgb, var(--color-text) 78%, transparent)">Solo per la ristorazione: al primo contatto lascio in cucina un campione da 40 g. Si assaggia, poi si decide.</p>
+      </div>
+      <div style="background: color-mix(in srgb, var(--color-text) 4%, var(--color-bg)); padding: 20px 24px; grid-column: 1 / -1">
+        <p style="font-size: 15.5px; line-height: 1.7; margin: 0; color: color-mix(in srgb, var(--color-text) 62%, transparent)">Niente 3×2 e niente svendite: preferisco condizioni chiare e sempre le stesse, concordate in chat.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px clamp(28px, 5vw, 72px); padding: clamp(44px, 7vw, 80px) 0 0">
+    <div>
+      <h2 style="font-weight: 500; font-size: 26px; line-height: 1.2; margin: 0">Come si ordina</h2>
+      <p style="font-size: 16.5px; line-height: 1.7; margin: 14px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent); max-width: 46ch">Dimmi varietà e quantità: ti rispondo con giorno del taglio e condizioni.</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px">
+        <a class="btn" style="background: #25D366; color: #0B2E10; border-color: #25D366; font-weight: 600; font-size: 18px; border-radius: 999px" href="https://wa.me/393515286188" target="_blank" rel="noopener">Scrivimi su WhatsApp</a>
+      </div>
+    </div>
+    <div>
+      <h2 style="font-weight: 500; font-size: 26px; line-height: 1.2; margin: 0">Per le cucine</h2>
+      <p style="font-size: 16.5px; line-height: 1.7; margin: 14px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent); max-width: 46ch">Con qualche settimana di anticipo la semina segue il tuo menù: quello che chiedi, cresce per te.</p>
+    </div>
+  </section>
+
+  <footer style="padding: clamp(36px, 6vw, 64px) 0 clamp(32px, 5vw, 56px); font-size: 13.5px; line-height: 1.8; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <p style="margin: 0">Super Etna Food — azienda agricola Antonio Grasso · Via Stazione 83, 95024 Acireale (CT) · superetnafood@gmail.com · P.IVA 06189010876 · <a href="privacy.html">Privacy</a></p>
+  </footer>
+</div>
+
+<aside id="privacy-banner" role="region" aria-label="Informativa privacy" style="display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 999; background: #0D6E08; color: #ffffff; padding: 16px clamp(16px, 5vw, 48px); box-shadow: 0 -6px 24px rgba(0,0,0,0.18)">
+  <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px">
+    <p style="flex: 1 1 320px; font-size: 15.5px; line-height: 1.6; margin: 0; color: color-mix(in srgb, #ffffff 92%, transparent)">Usiamo Google Analytics per sapere quali pagine vengono lette. I dati non vengono diffusi né venduti a terzi. Se rifiuti, il sito funziona esattamente come prima e nessuna statistica viene raccolta. <a href="privacy.html" style="color: #F5E11A; text-decoration: underline">Informativa completa</a></p>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap">
+      <button type="button" id="privacy-rifiuta" class="btn" style="background: transparent; color: #ffffff; border-color: color-mix(in srgb, #ffffff 60%, transparent); font-weight: 600; font-size: 16px; border-radius: 999px; white-space: nowrap; cursor: pointer">Rifiuta</button>
+      <button type="button" id="privacy-accetta" class="btn" style="background: #F5E11A; color: #1A1A1A; border-color: #F5E11A; font-weight: 700; font-size: 16px; border-radius: 999px; white-space: nowrap; cursor: pointer">Accetta</button>
+    </div>
+  </div>
+</aside>
+</x-dc>
+</body>
+</html>
