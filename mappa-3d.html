@@ -650,7 +650,7 @@ function mostraScheda(n){
       <dt>Impalcatura</dt><dd>${fmt(s.hb,2)} m</dd><dt>Fusti</dt><dd>${s.tr}</dd><dt>Quota</dt><dd>${q} m</dd></dl>
       <p class="nf">${s.nota}</p><p class="stima">Misure stimate a occhio dalla foto.</p>`;
   }
-  schedaEl.style.display='block';
+  schedaEl.style.display = INIFRAME ? 'none' : 'block';
   schedaEl.querySelector('.chiudi').onclick=()=>{ schedaEl.style.display='none'; segno.visible=false; };
   segno.position.set(t[0],Y(t[0],t[1])+0.25,t[1]); segno.visible=true;
 }
