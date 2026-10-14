@@ -40,12 +40,29 @@
   .hint{position:fixed;right:18px;bottom:18px;font-size:11.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--linea);border-radius:3px;padding:7px 11px;backdrop-filter:blur(14px)}
   .quota{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);font-size:12px;color:var(--ink);background:var(--panel);border:1px solid var(--linea);
     border-radius:3px;padding:6px 11px;backdrop-filter:blur(14px);font-variant-numeric:tabular-nums;pointer-events:none;opacity:0;transition:opacity .15s}
-  .toggle-panel{display:none}
+  .toggle-panel{position:absolute;right:8px;top:8px;display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;background:transparent;border:1px solid rgba(237,231,220,.28);border-radius:2px;color:var(--ink);font:inherit;font-size:12px;cursor:pointer}
+  .toggle-panel:hover{border-color:var(--verdello)}
+  .toggle-panel:focus-visible{outline:2px solid var(--verdello);outline-offset:2px}
+  .panel h1{padding-right:110px}
+  .panel.closed{width:auto;padding:10px 12px}
+  .panel.closed .body,.panel.closed .sub{display:none}
+  .panel.closed h1{margin:0;padding-right:84px;line-height:32px;font-size:15px}
+  body.embed .hint{display:none}
+  body.embed .panel{width:264px;left:12px;top:12px;max-height:calc(100vh - 24px)}
+  body.embed .panel.closed{width:auto}
+  body.embed .compass{width:44px;height:44px;right:12px;top:12px}
   @media (max-width:720px){
-    .panel{left:10px;right:10px;top:10px;width:auto;max-height:52vh;padding:13px}
-    .panel.closed .body{display:none}
-    .toggle-panel{display:block;position:absolute;right:11px;top:11px;background:transparent;border:0;color:var(--ink-dim);font:inherit;font-size:12px;cursor:pointer}
-    .hint{display:none} .compass{right:12px;top:auto;bottom:14px;width:44px;height:44px}
+    .panel,body.embed .panel{left:10px;right:auto;top:10px;width:calc(100vw - 76px);max-height:58vh;padding:13px}
+    .panel.closed,body.embed .panel.closed{width:auto;padding:8px 10px}
+    .hint{display:none} .compass,body.embed .compass{right:10px;top:10px;bottom:auto;width:44px;height:44px}
+    .toggle-panel{min-height:40px;padding:0 12px;font-size:13px}
+    .panel.closed h1{line-height:40px}
+    .views{gap:8px} .views button{min-height:40px;padding:8px 12px;font-size:13px}
+    .check{font-size:14px;min-height:34px} .check input{width:18px;height:18px}
+    input[type=range]{height:30px}
+    input[type=range]::-webkit-slider-thumb{width:22px;height:22px;margin-top:-11px}
+    input[type=range]::-moz-range-thumb{width:22px;height:22px}
+    #iTrova,#fTrova button{min-height:40px;font-size:15px!important}
   }
 
   #scheda{position:fixed;right:16px;top:84px;width:264px;max-height:calc(100vh - 150px);overflow-y:auto;display:none;background:var(--panel);
@@ -61,7 +78,7 @@
 </style>
 
 <div class="panel" id="panel">
-  <button class="toggle-panel" id="tp">nascondi</button>
+  <button class="toggle-panel" id="tp" aria-expanded="true">Chiudi opzioni</button>
   <h1>Il fondo in 3D</h1>
   <p class="sub">Terreno e confine dal rilievo LiDAR; gradoni dalle tue linee, con i muri raddrizzati e le piane spianate fra un muro e l'altro.</p>
   <div class="body">
@@ -493,7 +510,8 @@ sOra.addEventListener('input',e=>aggiornaSole(parseFloat(e.target.value)));
 sZoom.addEventListener('input',e=>{ dist=ZMIN+ZMAX-parseFloat(e.target.value); applicaCamera(); });
 fTrova.addEventListener('submit',e=>{ e.preventDefault(); trova(parseInt(iTrova.value,10)); });
 document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>vaiA(b.dataset.v)));
-tp.addEventListener('click',()=>{ panel.classList.toggle('closed'); tp.textContent=panel.classList.contains('closed')?'mostra':'nascondi'; });
+function statoPannello(chiuso){ panel.classList.toggle('closed', chiuso); tp.textContent = chiuso ? 'Opzioni' : 'Chiudi opzioni'; tp.setAttribute('aria-expanded', String(!chiuso)); }
+tp.addEventListener('click',()=>statoPannello(!panel.classList.contains('closed')));
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 
 /* ---------- piante ricostruite dalle foto ---------- */
@@ -615,15 +633,19 @@ function costruisciFoto(){
 /* ---------- scheda della pianta ---------- */
 const schedaEl=document.createElement('div'); schedaEl.id='scheda';
 document.body.appendChild(schedaEl);
+const FOTO_ULT={};
 function mostraScheda(n){
   const s=SCH[n], t=D.limoni[NUMS.indexOf(n)];
   if(!t){ schedaEl.style.display='none'; return; }
   const q=fmt(quotaAss(t[0],t[1]));
+  schedaEl.dataset.n=n;
+  const fu=FOTO_ULT[n];
+  const fotoHtml = fu && fu.foto ? `<img src="${fu.foto}" alt="Ultima foto della pianta ${n}"><p class="stima" style="margin:-4px 0 10px">Ultima foto caricata${fu.data ? ' · '+fu.data : ''}</p>` : '';
   if(!s){
-    schedaEl.innerHTML=`<button class="chiudi" aria-label="Chiudi">×</button><h2>Pianta ${n}</h2><p class="nf">Nessuna foto per questa pianta: nel modello è una chioma standard.</p><dl><dt>Quota</dt><dd>${q} m</dd></dl>`;
+    schedaEl.innerHTML=`<button class="chiudi" aria-label="Chiudi">×</button><h2>Pianta ${n}</h2>${fotoHtml || '<p class="nf">Nessuna foto per questa pianta: nel modello è una chioma standard.</p>'}<dl><dt>Quota</dt><dd>${q} m</dd></dl>`;
   } else {
     schedaEl.innerHTML=`<button class="chiudi" aria-label="Chiudi">×</button><h2>Pianta ${n}</h2>
-      <img src="${s.foto}" alt="Foto della pianta ${n}">
+      ${fotoHtml || `<img src="${s.foto}" alt="Foto della pianta ${n}">`}
       <dl><dt>Altezza</dt><dd>${fmt(s.h)} m</dd><dt>Chioma</dt><dd>${fmt(s.w)} m, ${FORMA_IT[s.forma]}</dd>
       <dt>Impalcatura</dt><dd>${fmt(s.hb,2)} m</dd><dt>Fusti</dt><dd>${s.tr}</dd><dt>Quota</dt><dd>${q} m</dd></dl>
       <p class="nf">${s.nota}</p><p class="stima">Misure stimate a occhio dalla foto.</p>`;
@@ -709,8 +731,13 @@ addEventListener('message',e=>{
   if(m.sef3d==='modifica'){ MODIFICA=!!m.on; modo.style.display=MODIFICA?'block':'none'; el.style.cursor=MODIFICA?'move':''; }
   if(m.sef3d==='trova' && m.n){ if(NUMS.includes(m.n)){ trova(m.n); iTrova.value=m.n; } else segno.visible=false; }
   if(m.sef3d==='nessuna'){ segno.visible=false; }
+  if(m.sef3d==='foto' && m.n){
+    if(m.foto) FOTO_ULT[m.n]={foto:m.foto, data:m.data||''}; else delete FOTO_ULT[m.n];
+    if(schedaEl.style.display==='block' && +schedaEl.dataset.n===m.n) mostraScheda(m.n);
+  }
 });
-if(innerWidth<720){ panel.classList.add('closed'); tp.textContent='mostra'; }
+if(window.parent!==window) document.body.classList.add('embed');
+if(innerWidth<1100 || window.parent!==window) statoPannello(true);
 let ultimoNum=0;
 function aggiornaNumeri(){
   const ora=performance.now(); if(ora-ultimoNum<200) return; ultimoNum=ora;
