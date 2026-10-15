@@ -1,15 +1,14 @@
 {
   "name": "Super Etna Food — Gestionale di campo",
   "short_name": "Super Etna Food",
-  "description": "Gestionale di campo per limoneto, zafferano e microgreen: conferimenti, quaderno di campagna, mappa piante, irrigazione, metriche e bandi.",
+  "description": "Gestionale di campo per limoneto, zafferano e microgreen.",
   "lang": "it",
-  "start_url": "./Gestionale%20Agricolo.dc.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0B132B",
   "theme_color": "#0B132B",
-  "categories": ["productivity", "utilities"],
   "icons": [
     { "src": "icona-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icona-512.png", "sizes": "512x512", "type": "image/png" },
